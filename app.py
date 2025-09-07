@@ -1,19 +1,9 @@
 import streamlit as st
 import pickle
 import string
-import nltk
+import re
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
-
-# ----------------------------
-# Force-download NLTK data safely
-# ----------------------------
-nltk_packages = ['punkt', 'stopwords']
-for pkg in nltk_packages:
-    try:
-        nltk.data.find(f'tokenizers/{pkg}' if pkg == 'punkt' else f'corpora/{pkg}')
-    except LookupError:
-        nltk.download(pkg)
 
 # ----------------------------
 # Initialize Stemmer
@@ -21,23 +11,22 @@ for pkg in nltk_packages:
 ps = PorterStemmer()
 
 # ----------------------------
-# Text Preprocessing Function
+# Text Preprocessing Function (no nltk.word_tokenize)
 # ----------------------------
 def transform_text(text):
-    text = text.lower()
-    text = nltk.word_tokenize(text)
-
-    # Remove non-alphanumeric characters
-    y = [i for i in text if i.isalnum()]
-
+    text = text.lower()  # lowercase
+    
+    # Split using regex to handle punctuation and spaces
+    text = re.findall(r'\b\w+\b', text)
+    
     # Remove stopwords and punctuation
     stop_words = set(stopwords.words('english'))
-    y = [i for i in y if i not in stop_words and i not in string.punctuation]
-
-    # Stemming
-    y = [ps.stem(i) for i in y]
-
-    return " ".join(y)
+    text = [word for word in text if word not in stop_words and word not in string.punctuation]
+    
+    # Apply stemming
+    text = [ps.stem(word) for word in text]
+    
+    return " ".join(text)
 
 # ----------------------------
 # Load Vectorizer and Model
