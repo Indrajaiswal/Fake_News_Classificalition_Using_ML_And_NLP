@@ -3,5 +3,7 @@ scikit-learn
 nltk
 numpy
 pandas
-punkt
-stopwords
+matplotlib
+seaborn
+wordcloud
+xgboost
