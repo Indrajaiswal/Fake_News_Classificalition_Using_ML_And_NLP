@@ -6,15 +6,22 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
 # ----------------------------
+# Ensure NLTK data is available
+# ----------------------------
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
+
+# ----------------------------
 # Initialize Stemmer
 # ----------------------------
 ps = PorterStemmer()
-
-# ----------------------------
-# Download NLTK dependencies
-# ----------------------------
-nltk.download('stopwords')
-nltk.download('punkt')
 
 # ----------------------------
 # Text Preprocessing Function
@@ -42,7 +49,7 @@ try:
     tfidf = pickle.load(open('vectorizer.pkl', 'rb'))
     model = pickle.load(open('model.pkl', 'rb'))
 except FileNotFoundError as e:
-    st.error(f"Error loading model or vectorizer: {e}")
+    st.error(f"❌ Error loading model or vectorizer: {e}")
     st.stop()
 
 # ----------------------------
